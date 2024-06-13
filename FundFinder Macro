@@ -1,0 +1,31 @@
+Sub HideNonMatchingRows()
+
+    Dim wsList1 As Worksheet
+    Dim wsBlueprint As Worksheet
+    Dim cellList1 As Range
+    Dim cellBlueprint As Range
+    Dim matchFound As Boolean
+    
+    ' Set references to the worksheets
+    Set wsList1 = Workbooks.Open("C:\Users\lenovo\OneDrive\Documents\List1.xlsx").Sheets("Sheet1")
+    Set wsBlueprint = ThisWorkbook.Sheets("Sheet1")
+    
+    ' Loop through each cell in Blueprint
+    For Each cellBlueprint In wsBlueprint.Range("A1:A" & wsBlueprint.Cells(wsBlueprint.Rows.Count, "A").End(xlUp).Row)
+        matchFound = False ' Reset matchFound flag for each cell in Blueprint
+        
+        ' Loop through each cell in List1
+        For Each cellList1 In wsList1.Range("A1:A" & wsList1.Cells(wsList1.Rows.Count, "A").End(xlUp).Row)
+            ' Check if the cell value in Blueprint contains the cell value in List1
+            If InStr(1, cellBlueprint.Value, cellList1.Value, vbTextCompare) > 0 Then
+                matchFound = True
+                Exit For ' Exit loop once a match is found
+            End If
+        Next cellList1
+        
+        ' If no match is found, hide the entire row
+        If Not matchFound Then
+            cellBlueprint.EntireRow.Hidden = True
+        End If
+    Next cellBlueprint
+End Sub
